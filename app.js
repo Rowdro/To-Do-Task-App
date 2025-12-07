@@ -991,7 +991,7 @@ function renderTasksList(tasks){
   tasksContainer.innerHTML='';
   if(!tasks||!tasks.length){
     const empty=document.createElement('div');
-    empty.style.color='#fff'; 
+    empty.style.color='#4A3520'; 
     empty.style.opacity='0.95';
     empty.textContent='No tasks yet — add your first one!';
     tasksContainer.appendChild(empty); 
