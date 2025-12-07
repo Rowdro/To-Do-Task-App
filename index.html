@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Taskly — To-Do App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+  <div class="frame" id="frame">
+    <div class="page">
+
+      <!-- LOGIN PAGE -->
+      <div id="loginPage" class="content auth-area">
+        <div class="logo-top-left">Taskly</div>
+        <div class="welcome">Welcome back! <br>Let's make today productive.</div>
+        <input id="loginEmail" type="email" placeholder="Email" />
+        <div class="password-wrapper">
+          <input id="loginPass" type="password" placeholder="Password" />
+          <span class="toggle-password" id="toggleLoginPass">👁️‍🗨️</span>
+        </div>
+        <div class="remember-me">
+          <input type="checkbox" id="rememberMe" /> Remember me
+        </div>
+        <button class="btn-primary" id="loginBtn">Sign In</button>
+        <button class="google-btn" id="googleSign">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
+          Sign in with Google
+        </button>
+        <div class="muted">
+          Don't have an account? <span class="link" id="goRegister">Register</span>
+        </div>
+      </div>
+
+      <!-- REGISTER PAGE -->
+      <div id="registerPage" class="content auth-area hidden">
+        <div class="logo-top-left">Taskly</div>
+        <div class="welcome">Create Account <br>Start organizing your tasks today.</div>
+        <input id="registerFirstName" type="text" placeholder="First Name" />
+        <input id="registerLastName" type="text" placeholder="Last Name" />
+        <input id="registerEmail" type="email" placeholder="Email" />
+        <div class="password-wrapper">
+          <input id="registerPass" type="password" placeholder="Password" />
+          <span class="toggle-password" id="toggleRegisterPass">👁️‍🗨️</span>
+        </div>
+        <div class="password-wrapper">
+          <input id="registerConfirm" type="password" placeholder="Confirm Password" />
+          <span class="toggle-password" id="toggleRegisterConfirm">👁️‍🗨️</span>
+        </div>
+        <button class="btn-primary" id="registerBtn">Register</button>
+        <button class="google-btn" id="googleRegister">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
+          Sign in with Google
+        </button>
+        <div class="muted">
+          Already have an account? <span class="link" id="goLogin">Sign In</span>
+        </div>
+      </div>
+
+      <!-- DASHBOARD PAGE -->
+      <div id="dashboardPage" class="dashboard-page hidden">
+        <div class="header">
+          <div class="header-bar" style="align-items:center;">
+            <button id="hamburger" class="hamburger" aria-label="menu"><span class="line">☰</span></button>
+
+            <!-- search expander -->
+            <div class="search-expander" id="searchExpander" style="margin-left:8px;">
+              <button class="btn-icon" id="searchIcon" title="Search">🔍</button>
+              <input id="searchInput" class="search-input" placeholder="Search tasks..." />
+            </div>
+          </div>
+
+          <!-- icons aligned right boxed -->
+          <div class="header-bar" style="margin-left:auto;">
+            <div class="icon-box">
+              <button class="btn-icon" id="notifyIcon" title="Notifications">🔔</button>
+              <button class="btn-icon" id="profileIcon" title="Profile">👤</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- short colored sidebar -->
+        <div id="sidebar" class="sidebar" aria-hidden="true">
+
+          <!-- CLOSE BUTTON INSIDE SIDEBAR -->
+          <button id="closeSidebarBtn" class="close-sidebar-btn">✖</button>
+
+          <h3>Taskly</h3>
+          <div class="short-box">
+            <div class="nav-item" id="navAbout">About</div>
+            <div class="nav-item" id="navProfile">Edit Profile</div>
+            <div class="nav-item" id="navPrivacy">Privacy & policy</div>
+            <div class="nav-item" id="navSettings">Settings</div>
+          </div>
+          
+        </div>
+
+        <!-- tasks -->
+        <div class="tasks-container" id="tasksContainer"></div>
+
+        <!-- add button -->
+        <button class="add-task-btn" id="openAddTask" title="Add task">＋</button>
+
+        <!-- backdrop -->
+        <div class="backdrop" id="backdrop"></div>
+
+        <!-- add/edit card (slide-up tall) -->
+        <div class="add-task-card" id="addTaskCard" aria-hidden="true">
+          <h2 id="addCardTitle">Add New Task</h2>
+
+          <div style="display:flex;gap:12px;align-items:center;">
+            <input id="taskTitle" type="text" placeholder="Task title" />
+            <select id="taskPriority" style="width:120px;padding:10px;border-radius:8px;border:1px solid #ccc;">
+              <option value="" disabled selected>Priority</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+
+          <textarea id="taskDescription" placeholder="Description"></textarea>
+
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+            <input id="taskDate" type="date" style="flex:1;padding:10px;border-radius:8px;border:1px solid #ccc;" />
+            <input id="taskTime" type="time"
+              style="width:120px;padding:10px;border-radius:8px;border:1px solid #ccc;" />
+          </div>
+
+          <!-- Reminder controls -->
+          <label style="font-weight:700;margin-bottom:6px;display:block;">Reminder</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <select id="taskReminder" style="width:170px;padding:10px;border-radius:8px;border:1px solid #ccc;">
+              <option value="none" selected>None</option>
+              <option value="5">5 minutes before</option>
+              <option value="10">10 minutes before</option>
+              <option value="30">30 minutes before</option>
+              <option value="custom">Custom (minutes)</option>
+            </select>
+            <input id="taskReminderCustom" type="number" min="1" placeholder="Minutes"
+              style="width:110px;display:none;padding:10px;border-radius:8px;border:1px solid #ccc;" />
+            <!-- <div style="color:#666;font-size:13px;">(you'll get an in-page notification if open)</div> -->
+          </div>
+
+          <div class="add-footer">
+            <div style="display:flex;gap:8px;">
+              <button class="btn-primary" id="saveTaskBtn">Save</button>
+              <button class="task-back" id="cancelAddBtn">Cancel</button>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <!-- <div style="font-size:13px;color:#666;">Preview reminders</div> -->
+            </div>
+          </div>
+
+          <div class="close-task-form" id="closeTaskCard" title="Close">×</div>
+        </div>
+
+        <!-- profile popup (bigger) -->
+        <div class="pop-panel" id="profilePanel" aria-hidden="true">
+          <div class="panel-content">
+            <div class="panel-header" id="profileNameText">No name</div>
+            <div style="color:#666;margin-bottom:12px;" id="profileEmailText">noemail@example.com</div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <button class="task-back" id="openEditProfileFromPopup">Edit Profile</button>
+            </div>
+            <div>
+              <button id="logoutBtn" class="logout-btn">Log out</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- notifications popup -->
+        <div class="pop-panel" id="notifyPanel" aria-hidden="true" style="right:60px;">
+          <div class="panel-content">
+            <div class="panel-header">Notifications</div>
+            <div id="notifyList"></div>
+            <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+              <button class="task-back" id="clearNotifications">Clear</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Edit Profile centered card modal -->
+      <!-- FULL PAGE EDIT PROFILE -->
+      <div id="editProfilePage" class="edit-profile-page hidden">
+
+        <div class="edit-header">
+          <button id="closeEditPage" class="back-btn">←</button>
+          <h2>Edit Profile</h2>
+        </div>
+
+        <div class="edit-content">
+
+          <div class="edit-photo">
+            <img id="editProfilePreviewFull" src="https://via.placeholder.com/200" alt="profile">
+            <input id="editImageInputFull" type="file" accept="image/*" />
+          </div>
+
+          <label>First Name</label>
+          <input id="editFirstFull" type="text" placeholder="First name">
+
+          <label>Last Name</label>
+          <input id="editLastFull" type="text" placeholder="Last name">
+
+          <label>Email</label>
+          <input id="editEmailFull" type="email" placeholder="Email">
+
+          <button id="saveEditFull" class="btn-primary" style="margin-top:20px;">Save</button>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+
+  </div>
+  </div>
+<!-- 1. SETTINGS -->
+<div id="settingsPage" class="settings-page hidden">
+  <div class="settings-header">
+    <button class="back-btn" onclick="showPage('dashboardPage')">←</button>
+    <h2>Settings</h2>
+  </div>
+  <div class="settings-content">
+    <p><strong>App:</strong> To-Do-Task Manager App</p>
+    <p><strong>Version:</strong> 1.0 – December 2025</p>
+    <h4>Appearance</h4>
+    <p>Gradient theme is fixed – no toggle yet.</p>
+    <h4>Data & Privacy</h4>
+    <button class="task-back" onclick="localStorage.clear();alert('All local data cleared!');">Clear Local Data</button>
+    <h4>Contact</h4>
+    <p>For questions: mrongrowdro23@gmail.com</p>
+    <div class="copyright">© 2025 Rowdro Mrong – All rights reserved.</div>
+  </div>
+</div>
+
+<!-- ===== PRIVACY & POLICY ===== -->
+<div id="privacyPage" class="privacy-page hidden">
+  <div class="privacy-header">
+    <button class="back-btn">←</button>
+    <h2>Privacy & Policy</h2>
+  </div>
+  <div class="privacy-content">
+    <h3>To-Do-Task Manager App – Privacy Policy</h3>
+    <p><strong>Effective date:</strong> 06 December 2025</p>
+
+    <h4>1. Information we collect</h4>
+    <p>We only store the data you explicitly enter (tasks, name, email, profile picture). Everything is kept locally in your browser’s IndexedDB / localStorage; nothing is sent to our servers.</p>
+
+    <h4>2. How we use your information</h4>
+    <p>Your tasks are displayed, filtered and reminded entirely on your device. We do not share, sell or analyse your data.</p>
+
+    <h4>3. Cookies / “Remember me”</h4>
+    <p>The “Remember me” option saves your email address in localStorage so you don’t have to type it again. You can clear it by unticking the box or clearing your browser data.</p>
+
+    <h4>4. Third-party services</h4>
+    <p>Google-sign-in is handled by Firebase Authentication. Their respective privacy policies apply when you choose that option.</p>
+
+    <h4>5. Contact</h4>
+    <p>For questions please reach out at: <strong>mrongrowdro23@gmail.com</strong></p>
+
+    <div class="copyright">© 2025 Rowdro Mrong – All rights reserved.</div>
+  </div>
+</div>
+
+<!-- ===== SETTINGS ===== -->
+<div id="settingsPage" class="settings-page hidden">
+  <div class="settings-header">
+    <button class="back-btn">←</button>
+    <h2>Settings</h2>
+  </div>
+  <div class="settings-content">
+    <p><strong>App:</strong> To-Do-Task Manager App</p>
+    <p><strong>Version:</strong> 1.0 – December 2025</p>
+
+    <h4>Appearance</h4>
+    <p>Gradient theme is fixed – no toggle yet.</p>
+
+    <h4>Data & Privacy</h4>
+    <button class="task-back" onclick="localStorage.clear();alert('All local data cleared!');">Clear Local Data</button>
+
+    <h4>Contact</h4>
+    <p>For questions: mrongrowdro23@gmail.com</p>
+
+    <div class="copyright">© 2025 Rowdro Mrong – All rights reserved.</div>
+  </div>
+</div>
+
+<!-- ===== ABOUT ===== -->
+<div id="aboutPage" class="about-page hidden">
+  <div class="about-header">
+    <button class="back-btn">←</button>
+    <h2>About</h2>
+  </div>
+  <div class="about-content">
+    <h3>To-Do-Task Manager App</h3>
+    <p><strong>Version 1.0 – December 2025</strong></p>
+
+    <h4>What it is</h4>
+    <p>A clean, offline-first task manager that keeps your data private and your day productive.</p>
+
+    <h4>Key features</h4>
+    <ul>
+      <li>Swipe-to-delete tasks</li>
+      <li>Reminder notifications while the app is open</li>
+      <li>Local backup (export/import coming soon)</li>
+      <li>Light-weight & responsive</li>
+      <li>Zero server calls – everything stays on your device</li>
+    </ul>
+
+    <h4>Developer</h4>
+    <p>Built with ❤ by Rowdro Mrong.</p>
+
+    <div class="copyright">© 2025 Rowdro Mrong – All rights reserved.</div>
+  </div>
+</div>
+  <script src="app.js"></script>
+
+
+</body>
+
+</html>
